@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Trip – Bus</title>
+
+<style>
+body{font-family:Arial;background:#eef2f7;display:flex;justify-content:center;height:100vh;}
+.container{background:white;padding:25px;width:720px;border-radius:12px;box-shadow:0 0 20px rgba(0,0,0,.2);overflow:auto;max-height:95vh;}
+select,button{width:100%;padding:8px;margin:8px 0;}
+button{background:#2c7cff;color:white;border:none;border-radius:6px;}
+.card{border:2px solid #ddd;padding:10px;margin-top:10px;border-radius:6px;cursor:pointer;}
+.card:hover{border-color:#2c7cff;}
+.selected{border-color:#2c7cff;background:#eef5ff;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>My Trip – Bus 🚍</h2>
+
+<select id="from">
+<option>Bengaluru</option><option>Mysuru</option><option>Mangaluru</option>
+<option>Hubballi</option><option>Shivamogga</option><option>Ballari</option>
+<option>Kalaburagi</option><option>Udupi</option><option>Chikkamagaluru</option><option>Coorg</option>
+</select>
+
+<select id="to">
+<option>Mysuru</option><option>Bengaluru</option><option>Mangaluru</option>
+</select>
+
+<select id="time">
+<option>Morning</option><option>Afternoon</option><option>Night</option>
+</select>
+
+<button onclick="search()">Search Buses</button>
+
+<div id="routes"></div>
+
+<h3>Route Map</h3>
+<iframe id="map" width="100%" height="250"></iframe>
+
+<h3>Hotels (Click to Open)</h3>
+
+<select id="hotelType" onchange="loadHotels()">
+<option>Budget</option>
+<option>Standard</option>
+<option>Premium</option>
+</select>
+
+<div id="hotels"></div>
+
+<h3>Trip Summary</h3>
+<div id="summary"></div>
+
+<button onclick="confirmBooking()">Confirm Booking</button>
+<div id="confirm"></div>
+
+</div>
+
+<script>
+
+let selectedBus="";
+let selectedHotel="";
+
+function search(){
+
+let fromVal=document.getElementById("from").value;
+let toVal=document.getElementById("to").value;
+
+routes.innerHTML=`
+<h3>Available Buses</h3>
+
+<div class="card" onclick="selectBus(this,'KSRTC Govt','6:00 AM','₹600','Short Route')">
+KSRTC Govt – 6:00 AM – ₹600 – Short Route
+</div>
+
+<div class="card" onclick="selectBus(this,'Private Express','7:30 AM','₹550','Cheapest')">
+Private Express – 7:30 AM – ₹550 (Cheapest)
+</div>
+
+<div class="card" onclick="selectBus(this,'AC Sleeper','9:00 PM','₹750','Long Route')">
+AC Sleeper – 9:00 PM – ₹750 – Long Route
+</div>
+
+<div class="card">Stops: Ramanagara → Mandya → Mysuru</div>
+`;
+
+map.src="https://www.google.com/maps?q="+fromVal+","+toVal+"&output=embed";
+
+summary.innerHTML="From: "+fromVal+"<br>To: "+toVal;
+
+loadHotels();
+}
+
+function selectBus(card,name,time,fare,route){
+
+document.querySelectorAll(".card").forEach(c=>c.classList.remove("selected"));
+card.classList.add("selected");
+
+selectedBus=name+" | "+time+" | "+fare+" | "+route;
+
+summary.innerHTML+=`<br>Bus: ${selectedBus}`;
+}
+
+function loadHotels(){
+
+let type=document.getElementById("hotelType").value;
+
+if(type=="Budget"){
+hotels.innerHTML=`
+<div class="card" onclick="openHotel('Budget Inn','https://maps.google.com?q=Budget Inn Mysuru')">🏨 Budget Inn – ₹900</div>
+<div class="card" onclick="openHotel('Easy Stay','https://maps.google.com?q=Easy Stay Mysuru')">🏨 Easy Stay – ₹850</div>
+`;
+}
+
+if(type=="Standard"){
+hotels.innerHTML=`
+<div class="card" onclick="openHotel('City View','https://maps.google.com?q=City View Mysuru')">🏨 City View – ₹1200</div>
+<div class="card" onclick="openHotel('Comfort Lodge','https://maps.google.com?q=Comfort Lodge Mysuru')">🏨 Comfort Lodge – ₹1400</div>
+`;
+}
+
+if(type=="Premium"){
+hotels.innerHTML=`
+<div class="card" onclick="openHotel('Grand Palace','https://maps.google.com?q=Grand Palace Mysuru')">🏨 Grand Palace – ₹2000</div>
+<div class="card" onclick="openHotel('Royal Residency','https://maps.google.com?q=Royal Residency Mysuru')">🏨 Royal Residency – ₹2500</div>
+`;
+}
+}
+
+function openHotel(name,link){
+selectedHotel=name;
+summary.innerHTML+=`<br>Hotel: ${name}`;
+window.open(link,"_blank");
+}
+
+function confirmBooking(){
+
+if(selectedBus==""){
+alert("Please select a bus");
+return;
+}
+
+if(selectedHotel==""){
+alert("Please select hotel");
+return;
+}
+
+confirm.innerHTML="✅ Booking Confirmed<br>"+selectedBus+"<br>Hotel: "+selectedHotel;
+}
+
+</script>
+
+</body>
+</html>

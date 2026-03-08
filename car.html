@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Taxi</title>
+<style>
+body{font-family:Arial;background:#eef2f7;display:flex;justify-content:center;}
+.container{background:white;padding:25px;width:700px;border-radius:12px;}
+.card{border:2px solid #ddd;padding:10px;margin-top:10px;border-radius:6px;cursor:pointer;}
+.selected{border-color:#2c7cff;background:#eef5ff;}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h2>Taxi 🚗</h2>
+
+<input id="from" placeholder="Pickup">
+<input id="to" placeholder="Drop">
+
+<button onclick="search()">Search Taxi</button>
+
+<div id="routes"></div>
+
+<iframe id="map" width="100%" height="250"></iframe>
+
+<h3>Hotels</h3>
+<div id="hotels"></div>
+
+<div id="summary"></div>
+
+<button onclick="confirm()">Confirm</button>
+<div id="confirm"></div>
+
+</div>
+
+<script>
+
+let selectedTaxi="",selectedHotel="";
+
+function search(){
+
+routes.innerHTML=`
+<div class="card" onclick="pickTaxi(this,'Mini','₹450')">Mini – ₹450</div>
+<div class="card" onclick="pickTaxi(this,'Sedan','₹600')">Sedan – ₹600</div>
+<div class="card" onclick="pickTaxi(this,'SUV','₹850')">SUV – ₹850</div>
+`;
+
+map.src="https://www.google.com/maps?q="+from.value+","+to.value+"&output=embed";
+
+hotels.innerHTML=`
+<div class="card" onclick="pickHotel('City View')">City View</div>
+<div class="card" onclick="pickHotel('Budget Inn')">Budget Inn</div>
+`;
+
+summary.innerHTML="From "+from.value+" to "+to.value;
+}
+
+function pickTaxi(c,n,f){
+document.querySelectorAll(".card").forEach(x=>x.classList.remove("selected"));
+c.classList.add("selected");
+selectedTaxi=n+" "+f;
+summary.innerHTML+="<br>Taxi: "+selectedTaxi;
+}
+
+function pickHotel(h){
+selectedHotel=h;
+summary.innerHTML+="<br>Hotel: "+h;
+}
+
+function confirm(){
+confirm.innerHTML="Booked "+selectedTaxi+" | "+selectedHotel;
+}
+</script>
+
+</body>
+</html>
